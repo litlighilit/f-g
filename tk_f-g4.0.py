@@ -1,5 +1,4 @@
-from cProfile import label
-from gevent import config
+
 from numpy import *
 import matplotlib.pyplot as plt
 plt.rcParams['axes.unicode_minus']=False
@@ -57,8 +56,8 @@ def ref(res):
 
     l = list(res)
     for i in range(1, len(l) - 1):
-        if (l[i] == " ") and ((l[i - 1].isnumeric()) or 97 <= ord(l[i - 1]) <= 122 or l[i-1]=='(') and (
-                (l[i + 1].isnumeric()) or 97 <= ord(l[i + 1]) <= 122 or l[i+1]=='('):
+        if (l[i] == " ") and (l[i - 1].isalnum() or l[i-1]=='(') and (
+                (l[i + 1].isalnum()) or l[i+1]=='('):
             l[i] = "*"
 
     res = ""
