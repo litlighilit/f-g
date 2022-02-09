@@ -8,6 +8,7 @@
 * site-package-supported by matplotlib  
 * act in tkinter  
 * enable to change color,linestyle and marker(specifically marker) freely  
+* [c.txt](/src/c.txt) in src stores markers used for marker_cg(change marker function)
 
 ## operation
 #### input
@@ -15,11 +16,11 @@
 
 available|meaning|python expressing
 -|-|-
-$\quad $(blank space)|times|*
+&nbsp;(blank space)|times|*
 ^|power|**
-log_{a}(x)|the log of x to base a<!--log~a~x)-->|
+log_{a}(x)|the log of x to base a(log<sub>a</sub>x))|
 
-examples: y=x log_{2}(x^2) <!--$\rightarrow y=x log_2 x^2$-->
+examples: y=x log_{2}(x^2)  ->  y=x log<sub>2</sub>x<sup>2</sup><!--$\rightarrow y=x log_2 x^2$-->
 
 #### a Hotkey
 `ctrl`+`button-1(left mouse button)` to open a exec-interface  
