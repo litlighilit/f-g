@@ -102,8 +102,8 @@ def fn():
         '''if NameError:
             app.text.insert(0.0,'请检查表达式')'''
         y = eval(res0[2:])
-        if 'tan'in res0:
-            y[:-1][diff(y) < 0] = nan
+        #if 'tan'in res0:
+        #    y[:-1][diff(y) < 0] = nan
         app.au.plot(x, y, mode, linewidth=1,picker=True) 
     else:
         x = linspace(eval(lx[0]), eval(lx[-1]), n)
