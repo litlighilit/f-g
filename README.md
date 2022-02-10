@@ -7,7 +7,7 @@
 ## factor :pushpin:
 * site-package-supported by matplotlib  
 * act in tkinter  
-* enable to [change color,linestyle and marker](#-change-color,linestyle-and-marker)(specifically marker) freely  
+* enable to [change color,linestyle and marker](#change-colorlinestyle-and-marker)(specifically marker) freely  
 * [c.txt](/src/c.txt) in src stores [specal markers](#m) used for marker_cg(change marker function)
 
 ## operation :black_nib:
