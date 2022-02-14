@@ -1,4 +1,3 @@
-
 from numpy import *
 import matplotlib.pyplot as plt
 plt.rcParams['axes.unicode_minus']=False
@@ -16,9 +15,10 @@ def get_mode():
                 m0.append(i+j+z)
 
 def gets(st):
-    global s, ls, le,n,mode
+    global s, ls, le,n,mode,sf
     #ss = input("函数表达式(回车画图):")
-    s=st if not st.isspace() else '(x ^ 2 + y ^ 2 - 1) ^ 3 - x ^ 2 y ^ 3=0'  
+    s=st if not st.isspace() else '(x ^ 2 + y ^ 2 - 1) ^ 3 - x ^ 2 y ^ 3=0' 
+    #sf=s 
     if s == ('quit()' or 'exit()'): exec(s)
     ls = s.lower().split(',')
     on,om=True,True
@@ -31,9 +31,11 @@ def gets(st):
         if ls[i] in m0:
             mode=ls.pop(i)
             om=False
+            i-=1
         i+=1
     if on:n=100
     if om:mode='b-'
+    sf=''.join(ls)
     le = len(ls)
 
 
@@ -97,13 +99,12 @@ def fn():
     rx=ref(rx)
     lx = rx.split('<')
     if res0.startswith('y='):
-        
         x = linspace(eval(lx[0]), eval(lx[2]), n)
         '''if NameError:
             app.text.insert(0.0,'请检查表达式')'''
         y = eval(res0[2:])
-        #if 'tan'in res0:
-        #    y[:-1][diff(y) < 0] = nan
+        if 'tan'in res0:
+            y[:-1][diff(y) < 0] = nan
         app.au.plot(x, y, mode, linewidth=1,picker=True) 
     else:
         x = linspace(eval(lx[0]), eval(lx[-1]), n)
@@ -166,8 +167,10 @@ def color_cg(event):
             c=dc[c]
         else:
             c=tuple(round(i*255) for i in c[0][:3])
-    nc=askcolor(color=c,
-    title=this)[-1] or c #'or c'防止askcolor->None时报错
+    elif type(c) is tuple:
+        c=tuple(round(i*255) for i in c[:3])
+    nc=askcolor(color=c,#c:1.0会TypeError: %x format: an integer is required, not float
+    title=sf)[-1] or c #'or c'防止askcolor->None时报错
     this.set_color(nc)
     app.canvas.draw()
 
