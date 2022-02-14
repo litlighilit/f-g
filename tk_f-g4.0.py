@@ -35,7 +35,7 @@ def gets(st):
         i+=1
     if on:n=100
     if om:mode='b-'
-    sf=''.join(ls)
+    sf=','.join(ls)
     le = len(ls)
 
 
