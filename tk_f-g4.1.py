@@ -18,7 +18,6 @@ def gets(st):
     global s, ls, le,n,mode,sf
     #ss = input("函数表达式(回车画图):")
     s=st if not st.isspace() else '(x ^ 2 + y ^ 2 - 1) ^ 3 - x ^ 2 y ^ 3=0' 
-    #sf=s 
     if s == ('quit()' or 'exit()'): exec(s)
     ls = s.lower().split(',')
     on,om=True,True
@@ -88,7 +87,8 @@ def fp():
     exec(f'{lt[0]} = linspace(tn, tm, n)')
     exec(res1)
     exec(res2)
-    app.au.plot(eval('x'), eval('y'), mode, linewidth=1,picker=1)
+    f,=app.au.plot(eval('x'), eval('y'), mode, linewidth=1,picker=1)
+    app.df[str(f)]=sf
 
 
 
@@ -103,9 +103,10 @@ def fn():
         '''if NameError:
             app.text.insert(0.0,'请检查表达式')'''
         y = eval(res0[2:])
-        if 'tan'in res0:
-            y[:-1][diff(y) < 0] = nan
-        app.au.plot(x, y, mode, linewidth=1,picker=True) 
+        # if 'tan'in res0:
+        #     y[:-1][diff(y) < 0] = nan
+        f,=app.au.plot(x, y, mode, linewidth=1,picker=True) 
+        app.df[str(f)]=sf
     else:
         x = linspace(eval(lx[0]), eval(lx[-1]), n)
         ry = ls[2] if le >= 3 else '-2<y<2'
@@ -120,6 +121,8 @@ def fn():
         z = eval(res0)
         for i in app.au.contour(x, y, z, 0).collections:
             i.set_picker(2)
+            app.df[str(i)]=sf
+            
         
     '''if RuntimeWarning:
         app.text.insert(0.0,'请检查定义域')'''
@@ -169,8 +172,7 @@ def color_cg(event):
             c=tuple(round(i*255) for i in c[0][:3])
     elif type(c) is tuple:
         c=tuple(round(i*255) for i in c[:3])
-    nc=askcolor(color=c,#c:1.0会TypeError: %x format: an integer is required, not float
-    title=sf)[-1] or c #'or c'防止askcolor->None时报错
+    nc=askcolor(color=c)[-1] or c #'or c'防止askcolor->None时报错
     this.set_color(nc)
     app.canvas.draw()
 
@@ -236,7 +238,13 @@ def style_cg(event):
     f2.pack()
 
 def rmf(event):
-    event.artist.remove()
+    this=event.artist
+    sf=app.df[str(this)]
+    for key in list(app.df.keys()):
+        if app.df[key]==sf:
+            del app.df[key]
+    this.remove()
+    #del app.df[str(this)]
     app.canvas.draw()
     app.menu.destroy()
     
@@ -253,6 +261,7 @@ class Application(Frame):
         self.menu = Menu(root,tearoff=0)
         
         if a:
+            self.menu.add_command(label=app.df[str(a.artist)],state='disabled')
             self.menu.add_command(label="set color",command=lambda:color_cg(a))
             self.menu.add_command(label="set style",command=lambda:style_cg(a))
             self.menu.add_separator()
@@ -299,7 +308,6 @@ class Application(Frame):
 
 def main():
     get_mode()
-    
     def win():
         sc_w=root.winfo_screenwidth()
         sc_h=root.winfo_screenheight()
@@ -313,6 +321,7 @@ def main():
     root.title('函数')
     global app
     app = Application(master=root)
+    app.df={}
     root.mainloop()
    
 
