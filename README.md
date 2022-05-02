@@ -10,6 +10,7 @@
 > Due to the lack of time,it just partly modularized(but can run smoothly
 
 <br>
+
 ## factor :pushpin:
 * site-package-supported by matplotlib  
 * act in tkinter  
