@@ -29,7 +29,10 @@ where there will post a menu for you to change the object's color,linestyle and 
 in c.txt,there are some Greek alphabets to be used as special markers  
 ### a Hotkey
 `ctrl`+`button-1(left mouse button)` to open a exec-interface  
-
+## model_ones
+if you are more interested in modular programming,please move to [the model_ones](https://github.com/litlighilit/f-g/tree/model_ones)
+> note:
+> Due to the lack of time,[it](#model_ones)'s just partly modularized(but can run smoothly)
 ## something to say :envelope:
 f-g was created during my Senior-2's holiday(2021)  
 
