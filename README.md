@@ -5,6 +5,10 @@
 <br>
 
 > **<ins>This is a branch in aardio-lang which is specifically for Windows,thus [the built exe file](https://github.com/litlighilit/f-g/blob/aardio_exe/aardio_python.exe) is uploaded together</ins>**
+<br>
+
+*:exclamation:note:for exe to run the files in [res/fg6.0](https://github.com/litlighilit/f-g/tree/aardio_exe/res/fg6.0) is required*
+
 
 ## factor :pushpin:
 * site-package-supported by matplotlib  
@@ -24,7 +28,9 @@ log_{a}(x)|the log of x to base a(log<sub>a</sub>x))|
 
 examples: y=x log_{2}(x^2)  :arrow_right:  y=x log<sub>2</sub>x<sup>2</sup><!--$\rightarrow y=x log_2 x^2$-->  
 &emsp;What's more,you con input something like`y=x,-10<x<10,r--,n=10`to initialize more accurately
-### ~~change color,linestyle and marker~~ yet not supported
+### change color,linestyle and marker
+:red_circle:yet not supported
+
 click a object,then press right mouse button  
 where there will post a menu for you to change the object's color,linestyle and marker  
 *<h4 id="m"> specal markers  </h4>*
