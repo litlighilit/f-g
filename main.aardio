@@ -1,0 +1,32 @@
+
+import py3;
+import py3.lib.numpy;
+import py3.lib.matplotlib;
+import win.ui;
+/*DSG{{*/
+mainForm = win.form(text="fg6.0_0";right=959;bottom=591)
+mainForm.add(
+button={cls="button";text="run";left=692;top=520;right=738;bottom=550;z=3};
+expr_input={cls="edit";left=220;top=516;right=680;bottom=554;autohscroll=false;bgcolor=11842740;edge=1;multiline=1;vscroll=1;z=1};
+plus={cls="plus";left=230;top=11;right=730;bottom=511;z=2}
+)
+/*}}*/
+
+//bind to run
+var _key=0x1b  //"VK_ESCAPE"
+import py3;
+py3.appendPath("/res/fg6.0");
+py3.exec($"/res/fg6.0/imain.py");
+//var pyMain = py3.import("/res/fg6.0/imain.py");
+mainForm.reghotkey( function(id,mod,vk){
+      mainForm.button.oncommand()
+  },0,_key)
+mainForm.button.oncommand = function(id,event){
+	var input=mainForm.expr_input.text
+	//py3.export(input)
+	var pyBytes = py3.main.imain(input);//调用 Python 函数
+	mainForm.plus.setBackground( pyBytes.parseValue(),false );//设置图像，参数@2为 false 禁止缓存图像
+	
+}
+mainForm.show();
+return win.loopMessage();
