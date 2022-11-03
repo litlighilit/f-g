@@ -1,5 +1,5 @@
 
-def rmtan90(exp,y,x,*,rel_tol=0.1,abs_tol=0.0):
+def rmtan90(exp,y,x,*,abs_tol=0.1):
     ntan=exp.find('tan(')
     if ntan!=-1:
         intan=set()
@@ -16,12 +16,9 @@ def rmtan90(exp,y,x,*,rel_tol=0.1,abs_tol=0.0):
             n1=nns.find('tan(')
             if n1!=-1:findintan(nns,n1)
         findintan(exp,ntan)
-        from math import isclose,cos,nan
-        for i in range(len(x)):
-            for e in intan:
-                if isclose(cos(eval(e,{'x':x[i]})),0.0,rel_tol=rel_tol,abs_tol=abs_tol):
-                    y[i]=nan
-                    break
+        from numpy import cos,nan
+        for e in intan:
+            y[abs(cos(eval(e)))<=abs_tol]=nan
         del intan
         
 if __name__=='__main__':
@@ -29,7 +26,7 @@ if __name__=='__main__':
     
     x=linspace(0,pi,3)
     print(x)
-    s='tan(1+x)'
+    s='tan(x)'
     y=eval(s)
     print(y)
     rmtan90(s,x,y)
