@@ -103,9 +103,9 @@ def fn():
     rx=ref(rx)
     lx = rx.split('<')
     if res0.startswith('y='):
-        
-        x = linspace(eval(lx[0]), eval(lx[2]), n)
-        if NameError:
+        try:
+            x = linspace(eval(lx[0]), eval(lx[2]), n)
+        except NameError:
             print('请检查表达式')
         y = eval(res0[2:])
         if 'tan'in res0:
