@@ -1,2 +1,0 @@
-# *for character filling*
-*! unnecessary*
