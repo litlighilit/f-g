@@ -8,7 +8,7 @@ due to the lack of time,
 replace2mul can't handle ones like "| x" , temporarily
 '''
 print(NOTE)
-
+ext_rc = 'res/c.txt'
 _opchr=r'+-*/'
 def replace2mul(s):
 
@@ -303,7 +303,7 @@ def style_cg(event):
         for i in mark:
             addm(i)
 
-        mark2_l=open('./src/c.txt',encoding='utf-8').read().split('\n')
+        mark2_l=open(ext_rc,encoding='utf-8').read().split('\n')
         mark2_d,mark2=mark2_l[0].split(','),mark2_l[1].split(',')
         m2_menu=Menu(mark_menu)
         def addm2(o):
