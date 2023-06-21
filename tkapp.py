@@ -1,6 +1,7 @@
+import matplotlib.collections
 import matplotlib.pyplot as plt
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg, NavigationToolbar2Tk
-#from matplotlib.backend_bases import key_press_handler #由于输入框占据了按键，快捷键无效
+#from matplotlib.backend_bases import key_press_handler # here hotkeys handlers are somehow useless
 from functools import partial
 
 from tkinter import Tk,Frame,StringVar,Menubutton,Label,Menu,Entry,Button
@@ -8,14 +9,14 @@ from tkinter.colorchooser import askcolor
 from tkinter.simpledialog import askstring
 from tkinter.ttk import Separator
 
-from cnf import DPI
 from _func import fmain
-#partial fmain
+#will later partial fmain
 
 
 class Handler:
-    def __init__(self,target):
+    def __init__(self,target,res={}):
         self.target=target
+        self.res=res
     def color_cg(self,event):
         this=event.artist
         l0=list('bcgkmrwy')
@@ -23,26 +24,31 @@ class Handler:
         dc=dict(zip(l0,l1))
         c=this.get_color()
         if len(c)==1:
-            if type(c)==str:
+            if isinstance(c, str):
                 c=dc[c]
             else:
                 c=tuple(round(i*255) for i in c[0][:3])
-        elif type(c) is tuple:
+        elif isinstance(c, tuple):
             c=tuple(round(i*255) for i in c[:3])
-        nc=askcolor(color=c)[-1] or c #'or c'防止askcolor->None时报错
+        nc=askcolor(color=c)[-1] or c # without 'or c', when askcolor returns `None`, there'll be an error
         this.set_color(nc)
         self.target.canvas.draw()
 
     def style_cg(self,event):
+        # TODO:
+        #  * for `sw` use a toplevel instead of Tk 
+        #  * move some to a new `init_style_menu`to cache
         this=event.artist
+        if isinstance(this,
+            matplotlib.collections.PathCollection): return # PathCollection doesn't have `get_marker`...
         def l_cg(w):
             plt.setp(this,linestyle=w)
             self.target.canvas.draw()
-            s1.set(this.get_linestyle())
+            s1.set(w)
         def m_cg(w):
             plt.setp(this,marker=w)
             self.target.canvas.draw()
-            s2.set(this.get_marker())
+            s2.set(w)
         sw=Tk()
         sw.title(this)
         f1=Frame(sw)
@@ -52,44 +58,48 @@ class Handler:
         Label(f1,textvariable=s1).pack(side='right')
         m="- -- -. : None".split()
         line_menu=Menu(b1,tearoff=False)
-        def addl(o):
-            line_menu.add_command(label=o,command=lambda:l_cg(o))
+        def add_l(l):
+            line_menu.add_command(label=l,command=lambda:l_cg(l))
         for i in m:
-            addl(i)
+            add_l(i) # capture i
         b1.config(menu=line_menu)
         b1.pack(side='right')
 
         f2=Frame(sw)
-        try:
-            s2=StringVar(sw)
-            s2.set(this.get_marker())
-            b2=Menubutton(f2,text='change marker:', relief="raised")
-            Label(f2,textvariable=s2).pack(side='right')
-            mark_menu=Menu(b2,tearoff=False)
-            mark=list(' .,ov^<>1234sp*hHDd|_+x')
-            def addm(o):
-                mark_menu.add_command(label=o,command=lambda:m_cg(o))
-            for i in mark:
-                addm(i)
+        s2=StringVar(sw)
+        s2.set(this.get_marker())
+        b2=Menubutton(f2,text='change marker:', relief="raised")
+        Label(f2,textvariable=s2).pack(side='right')
+        mark_menu=Menu(b2,tearoff=False)
+        mark=' .,ov^<>1234sp*hHDd|_+x'
+        def add_m(m):
+            mark_menu.add_command(label=m,command=lambda:m_cg(m))
+        for i in mark:
+            add_m(i) # capture i
+        m2_menu=Menu(mark_menu)
 
-            mark2_l=open('./src/c.txt',encoding='utf-8').read().split('\n')
-            mark2_d,mark2=mark2_l[0].split(','),mark2_l[1].split(',')
-            m2_menu=Menu(mark_menu)
-            def addm2(o):
-                m2_menu.add_command(label=mark2_d[o],command=lambda:m_cg(mark2[o]))
-            for i in range(len(mark2_d)):
-                addm2(i)
-            mark_menu.add_cascade(label='Greek',menu=m2_menu)
-            def entk():
-                s=askstring('符号','输入')
-                m_cg('$'+s+'$')
+        ext_marker_res = self.res.get('marker', None)
+        if ext_marker_res:
+            with open(ext_marker_res,encoding='utf-8') as f:
+                mark2_d, mark2 = map(
+                    lambda c: c.split(','), 
+                    f.read().split('\n'))
+                for i,c in enumerate(mark2_d):
+                    m2_menu.add_command(label=c,command=lambda:m_cg(mark2[i]))
+                mark_menu.add_cascade(label='ext',menu=m2_menu)
+        
+        def entk():
+            s=askstring('','marker:')
+            m_cg('$'+s+'$')
 
-            mark_menu.add_command(label='exec',command=entk)
+        mark_menu.add_command(label='exec',command=entk)
 
-            b2.config(menu=mark_menu)
-            b2.pack(side='right')
-        except:
-            Label(f2,text='no marker ').pack(side='left')
+        b2.config(menu=mark_menu)
+        b2.pack(side='right')
+        '''
+        else:
+            Label(f2,text='no marker ').pack(side='left')'''
+        
         f1.pack()
         Separator(sw,orient='horizontal').pack(fill='x')
         f2.pack()
@@ -108,12 +118,13 @@ class Handler:
     
 class Application(Frame):
 
-    def __init__(self, master,size):
+    def __init__(self, master,size, dpi=100, res={}):
         super().__init__(master)
         global fmain
         fmain=partial(fmain,self)
         self.size=size
-        self.handler=Handler(self)
+        self.dpi=dpi
+        self.handler=Handler(self,res)
         self.pack()
         self.creatmat()
         self.creatWidget()
@@ -136,16 +147,16 @@ class Application(Frame):
             except:pass # avoid error after "remove"
         self.master.bind("<Button-3>", do_popup)       
     def creatWidget(self):
-        self.label1 = Label(self,text='表达式')
+        self.label1 = Label(self,text='expression ')
         self.s1=StringVar()
         self.entry1 = Entry(self,textvariable=self.s1)
         self.entry1.bind('<Key-Return>',lambda x:fmain())
         self.label1.pack()
         self.entry1.pack()
-        Button(self,text='绘图',command=fmain).pack()
+        Button(self,text='plot',command=fmain).pack()
     def creatmat(self):
-        figsize=tuple(map(lambda x:x/DPI,self.size))
-        self.fig =plt.Figure(figsize=figsize, dpi=DPI,
+        figsize=tuple(map(lambda x:x/self.dpi,self.size))
+        self.fig =plt.Figure(figsize=figsize, dpi=self.dpi,
            facecolor='#0000006f'
            ,edgecolor='#99e5ff0f',linewidth=3)
         self.au = self.fig.add_subplot(111)
@@ -156,8 +167,8 @@ class Application(Frame):
         def to_exec0(event):
             menu=Menu(self.master)
             def to_exec():
-                s=askstring('指令','输入')
-                exec(s)
+                pycmd=askstring('','pycmd:')
+                exec(pycmd)
             menu.add_command(label='cmd>python',command=to_exec)
             menu.post(event.x_root, event.y_root+6)
         self.master.bind('<Control-1>',to_exec0)

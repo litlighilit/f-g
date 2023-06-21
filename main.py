@@ -1,4 +1,4 @@
-from cnf import WIN_FIG_RATE_W,WIN_FIG_RATE_H,FIG_CAN_RATE_W,FIG_CAN_RATE_H
+from cnf import WIN_FIG_RATE_W,WIN_FIG_RATE_H,FIG_CAN_RATE_W,FIG_CAN_RATE_H,DPI,RES
 from tkapp import Application
 from _func import get_mode
 
@@ -18,9 +18,9 @@ def main():
     winlocate=locatewin()
     root.geometry('%dx%d+%d+%d'%(winlocate)) #root.geometry('600x800+400+0')
     root.configure(bg='#ababab')
-    root.title('函数')
+    root.title('f-g')
     figsize=sizefig()
-    app = Application(master=root,size=figsize)
+    app = Application(master=root,size=figsize,dpi=DPI,res=RES)
     app.df={}
     root.mainloop()
    

@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 plt.rcParams['axes.unicode_minus']=False
 
 from tools.rmtan90 import rmtan90
-from tools._replace import *
+from tools.replace import *
 
 
 def get_mode():
@@ -21,7 +21,7 @@ def get_mode():
 
 def gets(st):
     global s, ls, le,n,mode,sf
-    #ss = input("函数表达式(回车画图):")
+    #ss = input("func expression(press Enter to plot):")
     s=st if not st.isspace() else '(x ^ 2 + y ^ 2 - 1) ^ 3 - x ^ 2 y ^ 3=0' 
     if s == ('quit()' or 'exit()'): exec(s)
     ls = s.lower().split(',')
@@ -76,6 +76,7 @@ def fp(app):
     exec(f'{lt[0]} = linspace(tn, tm, n)')
     exec(res1)
     exec(res2)
+    # we must use `eval``, as in function local variables are referred by index and here `x`,`y` aren't indexed
     f,=app.au.plot(eval('x'), eval('y'), mode, linewidth=1,picker=1)
     app.df[str(f)]=sf
 
@@ -90,11 +91,10 @@ def fn(app):
     if res0.startswith('y='):
         exp=res0[2:]
         x = linspace(eval(lx[0]), eval(lx[2]), n)
-        '''if NameError:
-            app.text.insert(0.0,'请检查表达式')'''
+        #except NameError: app.text.insert(0.0,'please check your input')
         y = eval(exp)
 
-        rmtan90(exp,y,x,rel_tol=0.1,abs_tol=0.0)
+        rmtan90(exp,y,x,abs_tol=0.0)
         
         f,=app.au.plot(x, y, mode, linewidth=1,picker=True) 
         app.df[str(f)]=sf
@@ -107,17 +107,15 @@ def fn(app):
         lres = res0.split('=')
         lres[-1] = '({})'.format(lres[-1])
         res0 = '-'.join(lres)
-        '''if NameError:
-            app.text.insert(0.0,'请检查表达式')'''
+        #except NameError: app.text.insert(0.0,'please check your input')
         z = eval(res0)
         for i in app.au.contour(x, y, z, 0).collections:
-            print(i)
+            #print(i)
             i.set_picker(2)
             app.df[str(i)]=sf
             
         
-    '''if RuntimeWarning:
-        app.text.insert(0.0,'请检查定义域')'''
+    #except RuntimeWarning: app.text.insert(0.0,'please check the domain of definition')
 
 def fshow(app):
     #app.canvas.title('func')
