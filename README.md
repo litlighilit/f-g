@@ -6,10 +6,16 @@
     model_ones:blue_book:
 </h3>
 
-> note:
-> Due to the lack of time,it just partly modularized(but can run smoothly
 
 <br>
+
+## Attention
+> See [funcgeo][funcurl],  
+> a further developed repository forked from and taking place of this one   
+> and this one just remains as a origin and no longer updated  
+> All in all, use [funcgeo][funcurl] instead  
+
+[funcurl]: https://github.com/litlighilit/funcgeo
 
 ## factor :pushpin:
 * site-package-supported by matplotlib  
